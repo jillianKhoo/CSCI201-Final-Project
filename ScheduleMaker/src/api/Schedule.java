@@ -225,27 +225,24 @@ public class Schedule implements Iterable<Session>, Cloneable{
 			Session session = sessionGroup.getSession(j);
 			// Check if this session is in conflict with all previous sessions in cadidate
 			// If in conflict, move on to next session
-			if (neighborSet.contains(session)) {
+			if ((neighborSet != null) && neighborSet.contains(session)) {
 				continue;
 			}
 			// If not in conflict, add to candidate
 			//  create a new session group with same signature but containing only this session 
-			candidate.createSessionGroup(sessionGroup.getCourseName(), sessionGroup.getCourseName());
+			candidate.createSessionGroup(sessionGroup.getCourseName(), sessionGroup.getSessionType());
 			candidate.addSession(index, session.getSessionID(), session.getStartTime(), 
 								 session.getEndTime(), session.getOnDay(), session.getLocation());
-			// Obtain the neighbor set of this session, and union with the neighbor set of the candidate
+			// Obtain the neighbor set of this session and generate the neighbor set for next recursive step
 			Set<Session> sessionNeighborSet = Graphs.neighborSetOf(graph, session);
-			if (neighborSet == null) {
-				// If there has not been a neighborSet, then set it to the neighbore set of the current session
-				neighborSet = sessionNeighborSet;
-			}
-			else {
-				// Else, take union
-				neighborSet.addAll(sessionNeighborSet);
+			
+			// If current neighborSet is not null, take the union of current neighborSet and sessionNeighborSet
+			if (neighborSet != null) {
+				sessionNeighborSet.addAll(neighborSet);
 			}
 			
 			// Proceed to next SessionGroup
-			backtracking(schedules, candidate, neighborSet, index + 1);
+			backtracking(schedules, candidate, sessionNeighborSet, index + 1);
 			
 			// After return, remove the the SessionGroup at this level for further backtracking
 			candidate.removeSessionGroup(index);
