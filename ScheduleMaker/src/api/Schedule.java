@@ -9,7 +9,7 @@ import java.util.Iterator;
 import org.jgrapht.*;
 import org.jgrapht.graph.*;
 
-public class Schedule implements Iterable<Session>{
+public class Schedule implements Iterable<Session>, Cloneable{
 	public static final int MON = 0;
 	public static final int TUE = 1;
 	public static final int WED = 2;
@@ -24,6 +24,27 @@ public class Schedule implements Iterable<Session>{
 	 */
 	public Schedule() {
 		sessionGroupList = new ArrayList<SessionGroup>();
+		graph = null;
+	}
+	
+	/**
+	 * Description: Deep copy
+	 */
+	public Object clone() throws CloneNotSupportedException {
+		// Assign the shallow copy to a new reference variable
+		Schedule s = (Schedule)super.clone();
+		
+		// Assign a new ArrayList object to s
+		s.sessionGroupList = new ArrayList<SessionGroup>();
+		// Copy contents
+		for (SessionGroup sessionGroup : this.sessionGroupList) {
+			s.sessionGroupList.add(sessionGroup);
+		}
+		
+		// Set graph to null
+		s.graph = null;
+		
+		return s;
 	}
 	
 	/**
@@ -189,7 +210,12 @@ public class Schedule implements Iterable<Session>{
 		// Base case
 		if (index >= sessionGroupList.size()) {
 			// Make a deep copy and add candidate to the schedules
-			schedules.add(candidate);
+			try {
+				Schedule candidate_copy = (Schedule)candidate.clone();
+				schedules.add(candidate_copy);
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
 			return;
 		}
 		
@@ -227,16 +253,24 @@ public class Schedule implements Iterable<Session>{
 	}
 		
 	// Return an arraylist of all non-conflicting schedules
-	private ArrayList<Schedule> schedule() {
+	private ArrayList<Schedule> scheduleAll() {
 		// Initialize graph
 		createGraph();
 		
 		ArrayList<Schedule> schedules = new ArrayList<Schedule>();
-		//Schedule candidate = new 
+		Schedule candidate = new Schedule();
 		// Backtracking algorithm
-		//backtracking(schedules, )
+		backtracking(schedules, candidate, null, 0);
 		
 		return schedules;
+	}
+	
+	/**
+	 * Description: The algorithm. Generate all non-conflicting schedules
+	 * @return return an arraylist of Schedule objects
+	 */
+	public ArrayList<Schedule> generateAllSchedules() {
+		return scheduleAll();
 	}
 	
 }
