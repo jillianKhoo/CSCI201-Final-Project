@@ -27,8 +27,8 @@ public class Schedule implements Iterable<Session>{
 	}
 	
 	/**
-	 * Description: Create a SessionGroup
-	 * @param SessionGroup
+	 * Description: Create a SessionGroup in the schedule
+	 * @param SessionGroup a SessionGroup object
 	 * @return the index of the SessionGroup just created
 	 */
 	public int createSessionGroup(SessionGroup SessionGroup) {
@@ -39,32 +39,47 @@ public class Schedule implements Iterable<Session>{
 	// Create a SessionGroup
 	// Return the index
 	/**
-	 * 
-	 * @param courseName
-	 * @param sessionType
-	 * @return
+	 * Description: Create a SessionGroup in the schedule
+	 * @param courseName Course name
+	 * @param sessionType Session type
+	 * @return the index of the SessionGroup just created
 	 */
 	public int createSessionGroup(String courseName, String sessionType) {
 		return this.createSessionGroup(new SessionGroup(courseName, sessionType));
 	}
 	
-	// Remove a SessionGroup by the index
+	/**
+	 * Description: get SessionGroup course name by its index
+	 * @param index the index of the SessionGroup
+	 * @return the course name of this SessionGroup
+	 */
+	public String getSessionGroupCourseName(int index) {
+		return sessionGroupList.get(index).getCourseName();
+	}
+	
+	/**
+	 * Description: get SessionGroup session type by its index
+	 * @param index the index of the SessionGroup
+	 * @return the session type of this SessionGroup
+	 */
+	public String getSessionGroupSessionType(int index) {
+		return sessionGroupList.get(index).getSessionType();
+	}
+	
+	/**
+	 * Description: Remove a SessionGroup by the index
+	 * @param index the index of the SessionGroup to remove
+	 */
 	public void removeSessionGroup(int index) {
 		sessionGroupList.remove(index);
 	}
 	
-	// get SessionGroup course name by its index
-	public String getSessionGroupCourseName(int id) {
-		return sessionGroupList.get(id).getCourseName();
-	}
-	
-	// get SessionGroup session type by its index
-	public String getSessionGroupSessionType(int id) {
-		return sessionGroupList.get(id).getSessionType();
-	}
-	
-	// get SessionGroup index by course name and session type
-	// Return -1 if SessionGroup not found
+	/**
+	 * Description: Get SessionGroup index by course name and session type
+	 * @param courseName Course name
+	 * @param sessionType Session type
+	 * @return the index of the SessionGroup. Return -1 if SessionGroup not found
+	 */
 	public int getSessionGroupID(String courseName, String sessionType) {
 		for (int i = 0; i < sessionGroupList.size(); i++) {
 			if (sessionGroupList.get(i).getCourseName().equals(courseName) && 
@@ -75,27 +90,49 @@ public class Schedule implements Iterable<Session>{
 		return -1;
 	}
 	
-	// return the number of SessionGroups in this schedule
+	/**
+	 * Description: Return the number of SessionGroups in this schedule
+	 * @return The number of SessionGroups in this schedule
+	 */
 		public int size() {
 			return sessionGroupList.size();
 		}
 	
-	// Add a session to a SessionGroup
+	/**
+	 * Description: Add a session to a SessionGroup
+	 * @param sessionGroupId The index of the SessionGroup to which the session will be added
+	 * @param sessionID The session ID. e.g. "29645R"
+	 * @param startTime Start time of the session. In format "hh:mm", 24-hour time system
+	 * @param endTime End time of the session. In format "hh:mm", 24-hour time system
+	 * @param onDay A boolean array of size 5 indicating which day in a week this session is taking place. 
+	 * @param location The location of this session
+	 * @throws DateTimeParseException
+	 */
 	public void addSession(int sessionGroupId, String sessionID, String startTime, String endTime, 
 						   boolean [] onDay, String location) 
 				throws DateTimeParseException {
 		sessionGroupList.get(sessionGroupId).addSession(sessionID, startTime, endTime, onDay, location);
 	}
 	
-	// Add a session to a SessionGroup
+	/**
+	 * Description: Add a session to a SessionGroup
+	 * @param sessionGroupId The index of the SessionGroup to which the session will be added
+	 * @param sessionID The session ID. e.g. "29645R"
+	 * @param startTime Start time of the session. A java.time.Instant object
+	 * @param endTime End time of the session. A java.time.Instant object
+	 * @param onDay A boolean array of size 5 indicating which day in a week this session is taking place. 
+	 * @param location The location of this session
+	 * @throws DateTimeParseException
+	 */
 	public void addSession(int sessionGroupId, String sessionID, Instant startTime, Instant endTime, 
 						   boolean [] onDay, String location) 
 				throws DateTimeParseException {
 		sessionGroupList.get(sessionGroupId).addSession(sessionID, startTime, endTime, onDay, location);
 	}
 	
-	// Iterator for Schedule
-	//  Will traverse all SessionGroup and return only ONE session in each SessionGroup
+	/**
+	 * Description: Iterator for Schedule. Will traverse all SessionGroup and return only ONE session in each SessionGroup
+	 */
 	public Iterator<Session> iterator() {
 		Iterator<Session> it = new Iterator<Session> () {
 			private int currentIndex = 0;
@@ -117,36 +154,36 @@ public class Schedule implements Iterable<Session>{
 	}
 	
 	// Store all session conflicts by creating a graph
-		private void createGraph() {
-			// Initialize graph
-			graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
-			
-			// Add vertices
-			// Traverse every SessoinGroup and add every Session as a vertex to the graph
-			for (int i = 0; i < sessionGroupList.size(); i++) {
-				for (int j = 0; j < sessionGroupList.get(i).size(); j++) {
-					Session session = sessionGroupList.get(i).getSession(j);
-					graph.addVertex(session);
-				}
+	private void createGraph() {
+		// Initialize graph
+		graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
+		
+		// Add vertices
+		// Traverse every SessoinGroup and add every Session as a vertex to the graph
+		for (int i = 0; i < sessionGroupList.size(); i++) {
+			for (int j = 0; j < sessionGroupList.get(i).size(); j++) {
+				Session session = sessionGroupList.get(i).getSession(j);
+				graph.addVertex(session);
 			}
-			
-			// Check for conflicts and add edges
-			for (int i = 0; i < sessionGroupList.size(); i++) {
-				for (int j = 0; j < sessionGroupList.get(i).size(); j++) {
-					Session session1 = sessionGroupList.get(i).getSession(j);
-					// For each session, check with all sessions in following SessionGroup
-					for (int p = i+1; p < sessionGroupList.size(); p++) {
-						for (int q = 0; q < sessionGroupList.get(p).size(); q++) {
-							Session session2 = sessionGroupList.get(p).getSession(q);
-							// If have time conflict, add an edge
-							if (Session.isConflict(session1, session2)) {
-								graph.addEdge(session1, session2);
-							}
+		}
+		
+		// Check for conflicts and add edges
+		for (int i = 0; i < sessionGroupList.size(); i++) {
+			for (int j = 0; j < sessionGroupList.get(i).size(); j++) {
+				Session session1 = sessionGroupList.get(i).getSession(j);
+				// For each session, check with all sessions in following SessionGroup
+				for (int p = i+1; p < sessionGroupList.size(); p++) {
+					for (int q = 0; q < sessionGroupList.get(p).size(); q++) {
+						Session session2 = sessionGroupList.get(p).getSession(q);
+						// If have time conflict, add an edge
+						if (Session.isConflict(session1, session2)) {
+							graph.addEdge(session1, session2);
 						}
 					}
 				}
 			}
 		}
+	}
 		
 	private void backtracking(ArrayList<Schedule> schedules, Schedule candidate, Set<Session> neighborSet, int index) {
 		// Base case
@@ -195,9 +232,9 @@ public class Schedule implements Iterable<Session>{
 		createGraph();
 		
 		ArrayList<Schedule> schedules = new ArrayList<Schedule>();
-		Schedule candidate = new 
+		//Schedule candidate = new 
 		// Backtracking algorithm
-		backtracking(schedules, )
+		//backtracking(schedules, )
 		
 		return schedules;
 	}
