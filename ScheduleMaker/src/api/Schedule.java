@@ -263,11 +263,24 @@ public class Schedule implements Iterable<Session>, Cloneable{
 	}
 	
 	/**
-	 * Description: The algorithm. Generate all non-conflicting schedules
+	 * Description: The scheduling algorithm. Generate all non-conflicting schedules
 	 * @return return an arraylist of Schedule objects
 	 */
 	public ArrayList<Schedule> generateAllSchedules() {
 		return scheduleAll();
+	}
+	
+	/**
+	 * Description: The scheduling algorithm. Generate the first few highest weight non-conflicting schedules
+	 * @param num an integer specifying how many schedules to return
+	 * @return return an arraylist of Schedule objects
+	 */
+	public ArrayList<Schedule> generateSomeSchedules(int num) {
+		ArrayList<Schedule> schedules = scheduleAll();
+		if (num < schedules.size()) {
+			schedules.subList(num, schedules.size()).clear();
+		}
+		return schedules;	
 	}
 	
 }
