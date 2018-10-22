@@ -69,12 +69,12 @@
   window.fbAsyncInit = function() {
     FB.init({
       appId      : '386359818569874',
-      cookie     : true,  // enable cookies to allow the server to access 
+      cookie     : true,  // enable cookies to allow the server to access
                           // the session
       xfbml      : true,  // parse social plugins on this page
       version    : 'v2.8' // use graph api version 2.8
     });
-    // Now that we've initialized the JavaScript SDK, we call 
+    // Now that we've initialized the JavaScript SDK, we call
     // FB.getLoginStatus().  This function gets the state of the
     // person visiting this page and can return one of three states to
     // the callback you provide.  They can be:
@@ -103,8 +103,22 @@
     console.log('Welcome!  Fetching your information.... ');
     FB.api('/me', function(response) {
       console.log('Successful login for: ' + response.name);
+      console.log()
       document.getElementById('status').innerHTML =
         'Thanks for logging in, ' + response.name + '!';
+      var id = response.id;
+      console.log(id);
+      var path = "/"+id+"/friendlists";
+      FB.api(path, function(response){
+        console.log("in friends");
+        console.log(response);
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function(){
+			//tbd
+  	  	};
+  	  	xhttp.open("POST", "FriendUpdateServlet?id="+id, true);
+  	  	xhttp.send(JSON.stringify(response));
+      });
     });
   }
 </script>
@@ -117,7 +131,7 @@
 			</nav>
 		<!-- Wrapper -->
 			<div id="wrapper">
-				
+
 				<!-- Header -->
 					<header id="header" class="alt">
 						<h1>SChedule Maker</h1>
@@ -207,7 +221,7 @@
 									</div>
 								</footer>
 							</section>
-							
+
 
 					</div>
 					<br>
