@@ -1,10 +1,18 @@
+/**
+ * Author: Jincheng Zhou 
+ * email: jinchenz@usc.edu
+ * Date: 10/14/2018
+ */
 package api;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.Iterator;
+//import com.google.gson.Gson;
 
 import org.jgrapht.*;
 import org.jgrapht.graph.*;
@@ -173,6 +181,7 @@ public class Schedule implements Iterable<Session>, Cloneable{
 		};
 		return it;
 	}
+
 	
 	// Store all session conflicts by creating a graph
 	private void createGraph() {
@@ -367,6 +376,8 @@ class Session {
 	public static boolean isConflict(Session session1, Session session2) {
 		for (int i = 0; i < 5; i++) {
 			if (session1.getOnDay()[i] && session2.getOnDay()[i]) {
+				//if (session1.getStartTime().isAfter(session2.getStartTime()) && session1.getStartTime().isBefore(session2.getEndTime())
+				 //|| session1.getEndTime().isAfter(session2.getStartTime()) && session1.getEndTime().isBefore(session2.getEndTime())) {
 				if (!(session1.getStartTime().isBefore(session2.getStartTime()) && session1.getEndTime().isBefore(session2.getStartTime())
 					|| (session1.getStartTime().isAfter(session2.getEndTime()) && session1.getEndTime().isAfter(session2.getEndTime())))) {	
 					return true;
@@ -429,5 +440,23 @@ class Session {
 	// Return an boolean array indicating which day the session is on
 	public boolean[] getOnDay() {
 		return onDay;
+	}
+	
+	public String getJsonString() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a").withZone(ZoneId.of("Z"));
+		String json = "";
+		json += "{";
+		json += "\"courseName\" : \"" + this.courseName + "\", ";
+		json += "\"sessionType\" : \"" + this.sessionType + "\", ";
+		json += "\"sessionID\" : \"" + this.sessionID + "\", ";
+		json += "\"startTime\" : \"" + formatter.format(this.startTime) + "\", ";
+		json += "\"endTime\": \"" + formatter.format(this.endTime) + "\", ";
+		json += "\"onDay\": " + "[";
+		for (int i = 0; i < this.onDay.length; i++) {
+			json += this.onDay[i] + (i == this.onDay.length - 1 ? "], " : ", ");
+		}
+		json += "\"location\": \"" + this.location + "\"";
+		json += "}";
+		return json;
 	}
 }
