@@ -12,7 +12,6 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.Iterator;
-//import com.google.gson.Gson;
 
 import org.jgrapht.*;
 import org.jgrapht.graph.*;
@@ -376,9 +375,7 @@ class Session {
 	public static boolean isConflict(Session session1, Session session2) {
 		for (int i = 0; i < 5; i++) {
 			if (session1.getOnDay()[i] && session2.getOnDay()[i]) {
-				//if (session1.getStartTime().isAfter(session2.getStartTime()) && session1.getStartTime().isBefore(session2.getEndTime())
-				 //|| session1.getEndTime().isAfter(session2.getStartTime()) && session1.getEndTime().isBefore(session2.getEndTime())) {
-				if (!(session1.getStartTime().isBefore(session2.getStartTime()) && session1.getEndTime().isBefore(session2.getStartTime())
+					if (!(session1.getStartTime().isBefore(session2.getStartTime()) && session1.getEndTime().isBefore(session2.getStartTime())
 					|| (session1.getStartTime().isAfter(session2.getEndTime()) && session1.getEndTime().isAfter(session2.getEndTime())))) {	
 					return true;
 				}
