@@ -180,7 +180,6 @@ public class Schedule implements Iterable<Session>, Cloneable{
 		};
 		return it;
 	}
-
 	
 	// Store all session conflicts by creating a graph
 	private void createGraph() {
