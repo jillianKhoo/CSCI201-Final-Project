@@ -1,6 +1,13 @@
+/**
+ * Author: Jincheng Zhou 
+ * email: jinchenz@usc.edu
+ * Date: 10/14/2018
+ */
 package api;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Set;
@@ -429,5 +436,23 @@ class Session {
 	// Return an boolean array indicating which day the session is on
 	public boolean[] getOnDay() {
 		return onDay;
+	}
+	
+	public String getJsonString() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a").withZone(ZoneId.of("Z"));
+		String json = "";
+		json += "{";
+		json += "\"courseName\" : \"" + this.courseName + "\", ";
+		json += "\"sessionType\" : \"" + this.sessionType + "\", ";
+		json += "\"sessionID\" : \"" + this.sessionID + "\", ";
+		json += "\"startTime\" : \"" + formatter.format(this.startTime) + "\", ";
+		json += "\"endTime\": \"" + formatter.format(this.endTime) + "\", ";
+		json += "\"onDay\": " + "[";
+		for (int i = 0; i < this.onDay.length; i++) {
+			json += this.onDay[i] + (i == this.onDay.length - 1 ? "], " : ", ");
+		}
+		json += "\"location\": \"" + this.location + "\"";
+		json += "}";
+		return json;
 	}
 }

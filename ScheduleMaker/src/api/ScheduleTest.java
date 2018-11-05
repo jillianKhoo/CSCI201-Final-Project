@@ -1,6 +1,14 @@
+/**
+ * Author: Jincheng Zhou 
+ * email: jinchenz@usc.edu
+ * Date: 10/14/2018
+ */
 package api;
 
 import java.util.ArrayList;
+
+import com.google.gson.Gson;
+
 
 public class ScheduleTest {
 
@@ -12,11 +20,11 @@ public class ScheduleTest {
 		test.test1();
 		
 		// test2
-		System.out.println("");
-		test.conflictTest();
+		//System.out.println("");
+		//test.conflictTest();
 		
 		// test3
-		test.test3();
+		//test.test3();
 	}
 	
 	public void test1() {
@@ -57,13 +65,16 @@ public class ScheduleTest {
 			System.out.println(String.format("Schedule %d:", i++));
 			
 			for (Session session : result) {
-				System.out.println(" " + session.getSessionCourseName()
-								   + "  " + session.getSessionType()
-								   + "  " + session.getSessionID()
-								   + "  " + session.getStartTime()
-								   + "  " + session.getEndTime()
-								   + "  " + session.getOnDay()
-								   + "  " + session.getLocation());
+//				System.out.println(" " + session.getSessionCourseName()
+//								   + "  " + session.getSessionType()
+//								   + "  " + session.getSessionID()
+//								   + "  " + session.getStartTime()
+//								   + "  " + session.getEndTime()
+//								   + "  " + session.getOnDay()
+//								   + "  " + session.getLocation());
+//				Gson gson = new Gson();
+//				System.out.println(gson.toJson(session));
+				System.out.println(session.getJsonString());
 			}
 			System.out.println("");
 		}
@@ -83,16 +94,16 @@ public class ScheduleTest {
 		
 		// Add session to each group
 		//  adding sessions to CSCI 104L
-		schedule.addSession(0, "29903R", "11:00", "12:20", new boolean[] {false, true, false, true, false}, "GFS101");
-		schedule.addSession(0, "29910R", "14:00", "15:20", new boolean[] {false, true, false, true, false}, "GFS101");
-		schedule.addSession(0, "29931R", "12:30", "13:50", new boolean[] {false, true, false, true, false}, "ZHS352");
+		//schedule.addSession(0, "29903R", "11:00", "12:20", new boolean[] {false, true, false, true, false}, "GFS101");
+		//schedule.addSession(0, "29910R", "14:00", "15:20", new boolean[] {false, true, false, true, false}, "GFS101");
+		//schedule.addSession(0, "29931R", "12:30", "13:50", new boolean[] {false, true, false, true, false}, "ZHS352");
 		schedule.addSession(0, "30397R", "09:30", "10:50", new boolean[] {false, true, false, true, false}, "GFS163");
-		schedule.addSession(1, "29905R", "14:00", "15:50", new boolean[] {false, true, false, false, false}, "SAL109");
+		//schedule.addSession(1, "29905R", "14:00", "15:50", new boolean[] {false, true, false, false, false}, "SAL109");
 		schedule.addSession(1, "29907R", "16:00", "17:50", new boolean[] {false, true, false, false, false}, "SAL109");
 		schedule.addSession(1, "29932R", "11:00", "1:50", new boolean[] {false, true, false, false, false}, "SAL109");
 		schedule.addSession(2, "30025R", "19:00", "20:50", new boolean[] {false, false, false, false, true}, "SAL109");
-		schedule.addSession(3, "29947D", "10:00", "11:50", new boolean[] {true, false, true, false, false}, "VPD105");
-		schedule.addSession(3, "29953D", "14:00", "15:20", new boolean[] {true, false, true, false, false}, "ZHS152");
+		//schedule.addSession(3, "29947D", "10:00", "11:50", new boolean[] {true, false, true, false, false}, "VPD105");
+		//schedule.addSession(3, "29953D", "14:00", "15:20", new boolean[] {true, false, true, false, false}, "ZHS152");
 		schedule.addSession(3, "30273D", "12:00", "13:50", new boolean[] {true, false, true, false, false}, "SLH102");
 		schedule.addSession(4, "29929R", "16:00", "17:50", new boolean[] {false, false, false, false, true}, "GFS116");
 		schedule.addSession(5, "30027R", "19:00", "20:50", new boolean[] {false, false, true, false, false}, "GFS116");
@@ -106,15 +117,20 @@ public class ScheduleTest {
 			System.out.println(String.format("Schedule %d:", i++));
 			
 			for (Session session : result) {
-				System.out.println(" " + session.getSessionCourseName()
-								   + "  " + session.getSessionType()
-								   + "  " + session.getSessionID()
-								   + "  " + session.getStartTime()
-								   + "  " + session.getEndTime()
-								   + "  " + session.getOnDay()
-								   + "  " + session.getLocation());
+//				System.out.println(" " + session.getSessionCourseName()
+//								   + "  " + session.getSessionType()
+//								   + "  " + session.getSessionID()
+//								   + "  " + session.getStartTime()
+//								   + "  " + session.getEndTime()
+//								   + "  " + session.getOnDay()
+//								   + "  " + session.getLocation());
+				System.out.println(session.getJsonString());
 			}
 			System.out.println("");
+			
+//			for (String sessionJson : result.getJsonIterator()) {
+//				System.out.println(sessionJson);
+//			}
 		}
 	}
 	
